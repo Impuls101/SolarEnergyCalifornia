@@ -1,22 +1,18 @@
 Project Name
 ==============================
 
-This repository is a Starting Pack for DS projects. You can rearrange the structure to make it fits your project.
+This project aims to find useful insights about the solar power generation in a spatial relation. The dataset focuses on geographic and technical features and supports energy planning, renewable energy development, and spatial analysis, providing insights into the distribution and characteristics of solar projects in California. It is particularly valuable for utility companies, policy analysts, and researchers focused on renewable energy infrastructure.
 
 Project Organization
 ------------
 
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data               <- Should be in your computer but not on Github (only in .gitignore)
+    ├── data               
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's name, and a short `-` delimited description, e.g.
-    │                         `1.0-alban-data-exploration`.
+    ├── notebooks          <- Jupyter notebooks. Naming convention is a number and a short description.
     │
     ├── references         <- Data dictionaries, manuals, links, and all other explanatory materials.
     │
