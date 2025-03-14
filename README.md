@@ -45,16 +45,14 @@ Welcome to the **Solar Power Plants Dataset - California** repository!
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
+    │   ├── features       <- Script to turn raw data into features for modeling
+    │   │   └── 3.0-Preprocessing.py
     │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   ├── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │   │   └── visualize.py
+    │   └── models         <- Scripts to train models and then use trained models to make
+    │       │                 predictions
+    │       ├── 3.2-Modeling.py
+    │       └── 1.1-Stacking_Approach.py
+ 
 
 --------
 
