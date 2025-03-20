@@ -1,0 +1,1 @@
+For more information on the project, or to download the data again, refer to https://www.kaggle.com/datasets/vijayveersingh/california-sunny-spaces .
