@@ -330,8 +330,8 @@ if page == pages[4]:
     import plotly.express as px
     import plotly.graph_objects as go
     import pandas as pd
-    #path = r"..\data\processed\\" # for Manuel
-    path = "~/dec24_bds_solar_energy/data/processed/" # for Eren
+    path = r"./data/processed/" # for Manuel
+    # path = "~/dec24_bds_solar_energy/data/processed/" # for Eren
 
     X_train = pd.read_csv(path+'X_train_os_robust.csv')
     X_test = pd.read_csv(path+'X_test_robust.csv')
