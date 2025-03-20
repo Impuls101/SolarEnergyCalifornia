@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
+from plotly.subplots import make_subplots
 
 # Set Seaborn style for better aesthetics
 sns.set(style="whitegrid", palette="muted", context="talk")
@@ -95,12 +97,13 @@ if page == pages[1]:
 if page == pages[2]:
     st.write("## 3. Data Visualization")
 
+    sns.set_theme() # to change theme
     fig = plt.figure()
-    sns.countplot(x = 'Solar Technoeconomic Intersection', data = df)
+    sns.countplot(x = 'Solar Technoeconomic Intersection', data = df, palette="deep")
     st.pyplot(fig)
 
     fig2 = plt.figure()
-    sns.countplot(x = 'Install Type', data = df)
+    sns.countplot(x = 'Install Type', data = df, palette="deep")
     plt.title("Distribution of Install Type")
     st.pyplot(fig2)
 
@@ -121,14 +124,53 @@ if page == pages[2]:
     image_area2=Image.open("StreamlitX/area_dist2.png")
 
     if st.checkbox('GTET distance'):
-        fig= plt.figure(figsize=(18,10))
-        plt.imshow(image_gtet)
-        plt.axis("off")
-        st.pyplot(fig)
+        # fig= plt.figure(figsize=(18,10))
+        # plt.imshow(image_gtet)
+        # plt.axis("off")
+        # st.pyplot(fig)
+
+        # Define y-axis label
+        y_axis_label = "Distance to Substation (Miles)"
+
+        # Define colors for each subplot
+        colors = ["indigo", "red", "aquamarine"]
+        y_variables = ["Distance to GTET 100", "Distance to GTET 200", "Distance to CAISO substation"]
+        
+        # Create subplots layout (without shared y-axis)
+        fig = make_subplots(
+            rows=1, cols=3,  
+            shared_yaxes=False,  # Each subplot gets its own y-axis
+            subplot_titles=y_variables  # Titles for each subplot
+        )
+
+        # Iterate over each variable, create boxplots, and add them to subplots
+        for i, (col, color) in enumerate(zip(y_variables, colors), start=1):
+            box_fig = px.box(df, x="Install Type", y=col, color_discrete_sequence=[color])  # Set box color
+
+            # Add traces to the subplot
+            for trace in box_fig["data"]:
+                fig.add_trace(trace, row=1, col=i)
+
+            # Add y-axis label only to the first subplot
+            fig.update_yaxes(title_text=y_axis_label if i == 1 else "", row=1, col=i)
+
+        # Update layout settings
+        fig.update_layout(
+            height=600, width=900,  # Figure size
+            showlegend=False  # Hide legend
+        )
+
+        # Display the figure in Streamlit
+        st.plotly_chart(fig)
+
     if st.checkbox('Area distribution'):
         fig, axes = plt.subplots(1, 2, figsize=(12, 10))    
-        axes[0].imshow(image_area1)    
-        axes[1].imshow(image_area2)    
+        sns.boxplot(data=df, y="Acres", x="Urban or Rural", ax=axes[0], palette="deep")
+        axes[0].set_title("Solar array area distribution by urbanicity")
+        axes[0].set_yscale("log")
+        sns.boxplot(data=df, y="Acres", x="Install Type", ax=axes[1], palette="deep")
+        axes[1].set_title("Solar array area distribution by install type")
+        axes[1].set_yscale("log") 
         st.pyplot(fig)
 
     # Plotting
@@ -231,7 +273,7 @@ if page == pages[3]:
         
     st.write("Before Re-Sampling:")
     fig, ax = plt.subplots(figsize=(8, 6))
-    sns.countplot(x="Solar Technoeconomic Intersection", data=df, ax=ax)
+    sns.countplot(x="Solar Technoeconomic Intersection", data=df, ax=ax, palette="deep")
     st.pyplot(fig)
     st.write("Share of the classes:")
     st.dataframe(df["Solar Technoeconomic Intersection"].value_counts(normalize=True).mul(100).round(2).astype(str) + "%")
@@ -340,7 +382,7 @@ if page == pages[4]:
 
     y_train = y_train.values.ravel() # to prevent warning messages
 
-    @st.cache_data
+    # @st.cache_data
     def prediction(classifier):
         if classifier == 'Random Forest':
             clf = RandomForestClassifier(random_state=42)
@@ -353,7 +395,7 @@ if page == pages[4]:
         clf.fit(X_train, y_train)
         return clf
     
-    @st.cache_data
+    # @st.cache_data
     def scores(_clf, choice, set_type="Test Set"): # "_" tells Streamlit not to try and hash the clf object (which is not hashable); set_type default is "Test Set"
         if choice == 'Classification Report' and set_type == "Test Set":
             y_pred = _clf.predict(X_test)
@@ -402,12 +444,22 @@ if page == pages[4]:
             )
             st.plotly_chart(fig)
         
-    clf = prediction(option)
+    # clf = prediction(option)
+    # Store the classifier in session_state to persist between changes
+    if 'clf' not in st.session_state or st.session_state.clf is None:
+        st.session_state.clf = prediction(option)
+
     display = st.radio('Choose an evaluation:', ('Classification Report', 'Confusion Matrix'))
+    
+    # Update the model and recompute predictions if the model changes
+    if option != st.session_state.get('last_model', None):
+        st.session_state.clf = prediction(option)
+        st.session_state.last_model = option  # Store the current model
+    
     if display == 'Classification Report':
-        scores(clf, display)
+        scores(st.session_state.clf, display)
     elif display == 'Confusion Matrix':
-        scores(clf, display)
+        scores(st.session_state.clf, display)
 
     st.write("### GridSearchCV")
     st.code(
