@@ -462,64 +462,67 @@ if page == pages[4]:
         scores(st.session_state.clf, display)
 
     st.write("### GridSearchCV")
-    st.code(
-        """
-        from sklearn.model_selection import GridSearchCV
-        from sklearn.metrics import f1_score, make_scorer
+    with st.expander("Code Snippet GridSearchCV", expanded=False):
+        st.code(
+            """
+            from sklearn.model_selection import GridSearchCV
+            from sklearn.metrics import f1_score, make_scorer
 
-        param_grids = {
-            "RandomForest": {
-                "n_estimators": [50, 100, 200],
-                "max_depth": [None, 10, 20],
-                "min_samples_split": [2, 5, 10]
-            },
-            "SVM": {
-                "C": [0.1, 1, 10],
-                "kernel": ["linear", "rbf"],
-                "gamma": ["scale", "auto"]
-            },
-            "XGBoost": {
-                "n_estimators": [50, 100, 200],
-                "learning_rate": [0.01, 0.1, 0.2],
-                "max_depth": [3, 5, 7]
-            },
-            "KNN": {
-                "n_neighbors": [3, 5, 7, 9],
-                "weights": ["uniform", "distance"],
-                "metric": ["euclidean", "manhattan"]
+            param_grids = {
+                "RandomForest": {
+                    "n_estimators": [50, 100, 200],
+                    "max_depth": [None, 10, 20],
+                    "min_samples_split": [2, 5, 10]
+                },
+                "SVM": {
+                    "C": [0.1, 1, 10],
+                    "kernel": ["linear", "rbf"],
+                    "gamma": ["scale", "auto"]
+                },
+                "XGBoost": {
+                    "n_estimators": [50, 100, 200],
+                    "learning_rate": [0.01, 0.1, 0.2],
+                    "max_depth": [3, 5, 7]
+                },
+                "KNN": {
+                    "n_neighbors": [3, 5, 7, 9],
+                    "weights": ["uniform", "distance"],
+                    "metric": ["euclidean", "manhattan"]
+                }
             }
-        }
 
-        models = {
-            "RandomForest": RandomForestClassifier(random_state=42),
-            "SVM": SVC(),
-            "XGBoost": XGBClassifier(eval_metric='logloss'),
-            "KNN": KNeighborsClassifier()
-        }
+            models = {
+                "RandomForest": RandomForestClassifier(random_state=42),
+                "SVM": SVC(),
+                "XGBoost": XGBClassifier(eval_metric='logloss'),
+                "KNN": KNeighborsClassifier()
+            }
 
-        scorer = make_scorer(f1_score, average='binary')
-        best_models = {}
+            scorer = make_scorer(f1_score, average='binary')
+            best_models = {}
 
-        for name, model in models.items():
-            print(f" Tuning {name} for F1-score...")
-            grid_search = GridSearchCV(model, param_grids[name], cv=5, scoring=scorer, n_jobs=-1)
-            grid_search.fit(X_train, y_train)
-            
-            best_models[name] = grid_search.best_estimator_
-            print(f" Best {name} Params: {grid_search.best_params_}")
-            print(f" Best {name} F1-score: {grid_search.best_score_:.4f}")
+            for name, model in models.items():
+                print(f" Tuning {name} for F1-score...")
+                grid_search = GridSearchCV(model, param_grids[name], cv=5, scoring=scorer, n_jobs=-1)
+                grid_search.fit(X_train, y_train)
+                
+                best_models[name] = grid_search.best_estimator_
+                print(f" Best {name} Params: {grid_search.best_params_}")
+                print(f" Best {name} F1-score: {grid_search.best_score_:.4f}")
 
-        # Evaluate the best models on the test set
-        print("Final Model Evaluations on Test Data:")
-        for name, model in best_models.items():
-            y_train_pred = model.predict(X_train)
-            f1 = f1_score(y_train, y_train_pred)
-            print(f" {name} train: F1-score = {f1:.4f}")
-            y_test_pred = model.predict(X_test)
-            f1 = f1_score(y_test, y_test_pred)
-            print(f" {name} test: F1-score = {f1:.4f}")
-        """
-            )
+            # Evaluate the best models on the test set
+            print("Final Model Evaluations on Test Data:")
+            for name, model in best_models.items():
+                y_train_pred = model.predict(X_train)
+                f1 = f1_score(y_train, y_train_pred)
+                print(f" {name} train: F1-score = {f1:.4f}")
+                y_test_pred = model.predict(X_test)
+                f1 = f1_score(y_test, y_test_pred)
+                print(f" {name} test: F1-score = {f1:.4f}")
+            """
+                )
+    st.write("To study overfitting, we compared the f1-score for our models after GridSearchCV on the train and test sets.")
+    st.image('./StreamlitX/table_models.png')
 
     #import joblib
     #joblib.dump(clf, "models/model.joblib")
