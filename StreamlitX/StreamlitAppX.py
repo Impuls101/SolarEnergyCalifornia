@@ -39,7 +39,7 @@ dfs, dfp, dgeo, df = load_and_preprocess_data()
 
 st.title("Solar Energy Generation in California 🌞")
 st.sidebar.title("Table of contents")
-pages=["1. Introduction", "2. Data Pre-Processing", "3. Data Visualization", "4. Model Preprocessing", "5. Modeling and Evaluation", "6. Conclusion", "7. Bonus: Stacking Approach"]
+pages=["1. Introduction", "2. Data Exploration", "3. Data Visualization", "4. Model Preprocessing", "5. Modeling and Evaluation", "6. Conclusion", "7. Bonus: Stacking Approach"]
 page=st.sidebar.radio("Go to", pages)
 
 if page == pages[0]: 
@@ -68,7 +68,7 @@ if page == pages[0]:
     st.write("The Solar Technoeconomic Intersection column is the target variable because it classifies the installation's suitability for solar energy production.")
 
 if page == pages[1]: 
-    st.write("## 2. Data Pre-Processing") 
+    st.write("## 2. Data Exploration") 
     st.write("The dataset comprises 5,397 rows and 21 columns (excluding the OBJECTID index column). First we cleaned the data and enhanced it by adding features.")
     st.write('#### Solar panels data after dropping unnecessary columns and shortening column names')
     if st.checkbox('Solar Data'):
